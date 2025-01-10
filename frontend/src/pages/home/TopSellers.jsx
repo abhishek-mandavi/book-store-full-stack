@@ -1,35 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import BookCard from '../books/BookCard';
-
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 
-// // // Import Swiper styles
+// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useFetchAllBooksQuery } from '../../redux/features/books/booksApi.js';
 
 const categories = ["Choose a genre", "Business", "Fiction", "Horror", "Adventure"]
 
 const TopSellers = () => {
-    const [books , setBooks] = useState([]);
     
-    useEffect(() => {
-        fetch("books.json")
-        .then(res => res.json())
-        .then((data) => setBooks(data))
-    },[])
-
     const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
+
+   const {data: books = []} = useFetchAllBooksQuery();
+  
     const filteredBooks = selectedCategory === "Choose a genre" ? books : books.filter(book => book.category === selectedCategory.toLowerCase())
 
-
-    return(
+    return (
         <div className='py-10'>
-            <h2 className='text-3xl font-semibold mb-6'>
-                Top Sellers
-            </h2>
+            <h2 className='text-3xl font-semibold mb-6'>Top Sellers</h2>
+        
             <div className='mb-8 flex items-center'>
                 <select
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -40,7 +34,7 @@ const TopSellers = () => {
                         ))
                     }
                 </select>
-           </div>
+            </div>
 
             <Swiper
                 slidesPerView={1}
@@ -67,6 +61,7 @@ const TopSellers = () => {
                 modules={[Pagination, Navigation]}
                 className="mySwiper"
             >
+
                 {
                    filteredBooks.length > 0 && filteredBooks.map((book, index) => (
                         <SwiperSlide key={index}>
@@ -74,13 +69,14 @@ const TopSellers = () => {
                         </SwiperSlide>
                     ))
                 }
+
+
+
             </Swiper>
-            
-        </div> 
 
+
+        </div>
     )
-} 
-
-
+}
 
 export default TopSellers
