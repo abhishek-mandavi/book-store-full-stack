@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import avatarImg from "../assets/avatar.png"
+import { useSelector } from "react-redux";
 
 import { HiMiniBars3CenterLeft, HiOutlineHeart, HiOutlineShoppingCart } from "react-icons/hi2";
 import { IoSearchOutline } from "react-icons/io5";
 import { HiOutlineUser } from "react-icons/hi";
 
 const navigation = [
+    {name: "Login", href:"/login"},
     {name: "Dashboard", href:"/user-dashboard"},
     {name: "Orders", href:"/orders"},
     {name: "Cart Page", href:"/cart"},
@@ -17,9 +19,10 @@ const Navbar = () => {
     const currentUser = true;
     const  [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const token = localStorage.getItem('token');
+    const cartItems = useSelector(state => state.cart.cartItems);
 
     const handleLogOut = () => {
-        logout()
+        
     }
 
     return(
@@ -53,34 +56,37 @@ const Navbar = () => {
                                   <ul className="py-2">
                                     {
                                         navigation.map((item) => (
-                                            <li key={item.name} onClick={() => setIsDropdownOpen(false)}>
-                                                <Link to={item.href} className="block px-4 py-2 text-sm hover:bg-gray-100">
-                                                    {item.name}
-                                                </Link>
-                                            </li>
+                                          <li key={item.name} onClick={() => setIsDropdownOpen(false)}>
+                                            <Link to={item.href} className="block px-4 py-2 text-sm hover:bg-gray-100">
+                                              {item.name}
+                                            </Link>
+                                          </li>
                                         ))
                                     }
                                     <li>
-                                       <button onClick={handleLogOut} className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                                         Logout
-                                        </button>
+                                      <button onClick={handleLogOut} className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                        Logout
+                                      </button>
                                     </li>
                                   </ul>
                                 </div>
                             )
                           }
-                        </> : token ?  <Link to="/dashboard" className='border-b-2 border-primary'>Dashboard</Link> :
-                        ( <Link to="/login"> <HiOutlineUser className="size-6" /></Link>)
+                        </> : token ?  <Link to="/dashboard" className='border-b-2 border-primary'>Dashboard</Link> :( <Link to="/login"> <HiOutlineUser className="size-6" /></Link>)
                         
 
                     }
                 </div>
                 <button className="hidden sm:block">
-                    <HiOutlineHeart className="size-6"/>
+                  <HiOutlineHeart className="size-6"/>
                 </button>
                 
                 <Link to="/cart" className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm">
                   <HiOutlineShoppingCart className='' />
+
+                  {
+                    cartItems.length > 0 ?  <span className="text-sm font-semibold sm:ml-1">{cartItems.length}</span> :  <span className="text-sm font-semibold sm:ml-1">0</span>
+                  }
                 </Link>
               </div>
             </nav>
